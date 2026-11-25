@@ -1,0 +1,325 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Glyph Theater</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1A1A1A;--bg:#FFFFFF}
+*{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}body{min-height:100%}
+body{background:#fff;font-family:Geist,system-ui,sans-serif;color:#1A1A1A;-webkit-font-smoothing:antialiased;max-width:1040px;margin:0 auto;padding:0 28px 140px}
+.pg-top{display:flex;align-items:center;gap:8px;height:64px;font-size:13px;color:#8E8C87}.pg-top a{color:#1A1A1A;text-decoration:none}.pg-top b{font-weight:500}.pg-top i{font-style:normal;color:#C9C7C2}
+.demo{--bg:#F7F7F7;position:relative;height:min(640px,calc(100vh - 150px));min-height:460px;background:#F7F7F7;border-radius:22px;overflow:hidden;box-shadow:inset 0 0 0 .5px rgba(26,26,26,.06)}
+#stage{position:absolute;inset:0}
+.g{position:absolute;white-space:pre;font:600 1em/1.15 "Geist Mono","SF Mono",ui-monospace,Menlo,monospace;color:var(--ink);pointer-events:none}
+.dctl{position:absolute;top:16px;z-index:20;display:flex;gap:2px;padding:3px;border-radius:999px;background:rgba(255,255,255,.8);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 1px 3px rgba(0,0,0,.05),inset 0 0 0 .5px rgba(26,26,26,.08)}.dctl.l{left:16px}.dctl.r{right:16px}
+.dctl button,.acts button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 11px;border-radius:999px;font:500 12.5px Geist,system-ui,sans-serif;color:#3A3936;transition:background .2s,color .2s}
+.dctl.l button{color:#8E8C87}.dctl.l button.on{background:#fff;color:#1A1A1A;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.dctl.r button{padding:0 8px}.dctl button:hover,.acts button:hover{background:rgba(26,26,26,.06)}.dctl.l button.on:hover{background:#fff}
+.dctl svg,.acts svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.info{padding:22px 4px 0}
+.ttl{display:flex;align-items:center;justify-content:space-between}.ttl h1{font:500 19px Geist,system-ui,sans-serif;letter-spacing:-.01em;margin:0}
+.acts{display:flex;gap:6px;align-items:center}.acts button{height:32px;padding:0 13px;box-shadow:inset 0 0 0 .5px rgba(26,26,26,.14)}
+.acts .gh{height:32px;display:inline-flex;align-items:center;gap:6px;padding:0 13px;border-radius:999px;font:500 12.5px Geist,system-ui,sans-serif;color:#3A3936;text-decoration:none;box-shadow:inset 0 0 0 .5px rgba(26,26,26,.14)}.acts .gh:hover{background:rgba(26,26,26,.05)}
+.desc{max-width:600px;font-size:14px;line-height:1.6;color:#55534F;margin:12px 0 14px}
+.uses{display:flex;align-items:center;gap:6px;font-size:12px;color:#8E8C87}.uses i{font-style:normal;padding:3px 9px;border-radius:999px;background:#F7F7F7;color:#55534F}
+.spec{margin-top:36px;padding-top:24px;border-top:.5px solid rgba(26,26,26,.1)}
+.tabs{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:#F7F7F7}.tabs button{all:unset;cursor:pointer;height:28px;padding:0 13px;border-radius:999px;font:500 12.5px Geist,system-ui,sans-serif;color:#8E8C87;transition:background .2s,color .2s}.tabs button.on{background:#fff;color:#1A1A1A;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.sp{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:20px;align-items:start}.sp p{font-size:15px;line-height:1.6;max-width:420px;padding-top:16px;color:#1A1A1A;margin:0}
+.sp .rows{display:grid;grid-template-columns:84px 1fr;gap:12px 16px;padding:20px 22px;border-radius:14px;background:#F7F7F7;font:400 12.5px/1.4 'Geist Mono',ui-monospace,monospace;color:#55534F}
+.sp .rows b{font-weight:400;color:#1A1A1A}.sp .rows u{text-decoration:none;color:#E2723B}
+body.m-full{max-width:none;padding:0;overflow:hidden;height:100%}body.m-full .pg-top,body.m-full .info{display:none}
+body.m-full .demo{position:fixed;inset:0;height:auto;min-height:0;border-radius:0;box-shadow:none}
+.spec h2{font:500 15px Geist,system-ui,sans-serif;margin:0 0 8px}.lead{max-width:640px;font-size:14px;line-height:1.6;color:#55534F;margin:0 0 18px}
+.row{border-radius:14px;background:#F7F7F7;margin-bottom:10px;overflow:hidden}
+.rh{display:flex;align-items:center;gap:12px;padding:10px 12px 10px 8px}
+.tg{all:unset;cursor:pointer;flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:4px 6px}.tg svg{width:15px;height:15px;flex:none;fill:none;stroke:#8E8C87;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;transition:transform .2s}
+.tg b{font:500 13.5px Geist,system-ui,sans-serif;flex:none}.tg span{font-size:12.5px;color:#8E8C87;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .body{display:none;padding:2px 22px 20px 38px}.row.open .body{display:block}.row.open .tg svg{transform:rotate(90deg)}
+pre.body{max-height:360px;overflow:auto}
+.note{font-size:13px;color:#55534F;margin:0 0 12px;line-height:1.5}.links{display:flex;gap:8px;margin-top:14px}
+.blk{border-radius:14px;background:#F7F7F7;padding:18px 20px}
+.bh{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:12px}.bh b{display:block;font:500 13.5px Geist,system-ui,sans-serif}.bh span{display:block;font-size:12.5px;color:#8E8C87;margin-top:3px}
+.cp{all:unset;cursor:pointer;flex:none;height:28px;padding:0 12px;display:inline-flex;align-items:center;border-radius:999px;background:#fff;font:500 12px Geist,system-ui,sans-serif;color:#3A3936;box-shadow:0 1px 3px rgba(0,0,0,.08);text-decoration:none}.cp:hover{background:#fafafa}
+pre{margin:0;font:400 12.5px/1.65 'Geist Mono',ui-monospace,monospace;color:#3A3936;white-space:pre-wrap;word-break:break-word}
+pre.tall{max-height:280px;overflow:auto;padding-right:6px;color:#55534F}
+.steps{list-style:none;display:grid;gap:10px;font-size:14px;color:#3A3936}.steps b{display:inline-block;width:110px;font-weight:500;color:#1A1A1A}.steps code{font:400 12.5px 'Geist Mono',monospace;background:#fff;padding:2px 6px;border-radius:6px}
+@media (max-width:760px){.steps b{display:block;width:auto}.sp{grid-template-columns:1fr;gap:20px}body{padding:0 16px 96px}.pg-top{height:52px}.demo{height:min(520px,calc(100svh - 120px));min-height:380px;border-radius:18px}.dctl{top:12px}.dctl.l{left:12px;max-width:calc(100% - 120px);overflow-x:auto;scrollbar-width:none}.dctl.r{right:12px}.dctl.l button{padding:0 9px;flex:none}.dctl.r span{display:none}.uses{flex-wrap:wrap}.tabs{display:flex;overflow-x:auto;max-width:100%;scrollbar-width:none}.tabs button{flex:none;padding:0 10px;font-size:12px}.sp p{padding-top:0;max-width:none}.sp .rows{grid-template-columns:72px 1fr;padding:16px 18px}}
+</style></head><body>
+<header class="pg-top"><a class="crumb" href="https://yuanshuyi.com/" target="_blank"><b>Shuyi Yuan</b></a><i>/</i><span>Glyph Theater</span></header>
+<div class="demo" id="demo">
+ <div id="stage"></div>
+ <div class="dctl l" id="picker"></div>
+ <div class="dctl r"><button id="replay" title="Replay"><svg viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg><span>Replay</span></button><button id="expand" title="Full screen"><svg viewBox="0 0 24 24"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button></div>
+</div>
+<section class="info">
+ <div class="ttl"><h1>Glyph Theater</h1><div class="acts"><button id="share" title="Copy link"><svg viewBox="0 0 24 24"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"/><path d="M16 6l-4-4-4 4M12 2v13"/></svg><span>Share</span></button><a class="gh" href="glyph-theater.zip" download><svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Get the skill</a></div></div>
+ <p class="desc">A skill for Claude and other AI agents that turns classic ASCII characters into tiny stories. Give it a topic: it picks a character, writes four beats with real tension, and plays them as a looping scene in black and white, with one accent color.</p>
+ <div class="uses"><span>Uses</span><i>Agent skill</i><i>ASCII library</i><i>script engine</i><i>self-check</i></div>
+ <div class="spec">
+  <h2>Hand it off to AI</h2>
+  <p class="lead">The prompt works in any AI tool, no install needed: paste it, answer two quick questions, and you get a looping story page. The skill goes further. It adds the character library, a fixed set of moves and a self-check, so every story comes out with the same rhythm and look.</p>
+  <div class="row open" id="r-prompt"><div class="rh"><button class="tg" aria-expanded="true"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg><b>Prompt</b><span id="pHint">Story: Cup · paste it into Claude, ChatGPT, Cursor or Codex</span></button><button class="cp" data-t="pText">Copy</button></div><pre id="pText" class="body"></pre></div>
+  <div class="row" id="r-skill"><div class="rh"><button class="tg" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg><b>Skill</b><span>glyph-theater · Claude, Claude Code, Codex, Cursor</span></button><button class="cp" data-t="iText">Copy install prompt</button></div>
+   <div class="body"><p class="note">Give this prompt to your agent: it installs the skill, and can update it later. In the Claude app, upload the .zip in your skill settings instead.</p><pre id="iText"></pre>
+   <div class="links"><a class="cp" href="glyph-theater.zip" download>Download .zip</a><a class="cp" href="SKILL.md" target="_blank">View SKILL.md</a></div></div></div>
+ </div>
+</section>
+<script>
+
+// ===== char-art 引擎 v2：故事只写剧本，动作从词表里拿 =====
+// 坐标一律用「格」：x = 第几列，y = 第几行。字宽、行高由引擎量出来，故事里不写像素。
+const SIZES={card:{cols:36,rows:14},wide:{cols:72,rows:12},small:{cols:26,rows:8}};
+const Q=new URLSearchParams(location.search);const SPEED=+(Q.get('speed')||1);
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const md=(s,c)=>esc(s).replace(/⟦(\w)\|(.*?)⟧/g,(m,k,t)=>`<span style="color:${(c&&c[k])||'var(--acc)'}">${t}</span>`);
+const plain=s=>s.replace(/⟦\w\|(.*?)⟧/g,'$1');
+let NOW=0;const TW=[];
+function tween(ms,fn){return new Promise(res=>TW.push({t0:NOW,ms:Math.max(ms,1),fn,res}))}
+const sleep=ms=>tween(ms,()=>{});
+const EASE={inout:p=>p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2,out:p=>1-(1-p)*(1-p),in:p=>p*p};
+// 路径：返回 [x进度, y进度, x偏移(格), y偏移(格)]
+const PATH={
+ slide:p=>[EASE.inout(p),EASE.inout(p),0,0],                       // 推、滑
+ walk:p=>[p,p,0,-Math.abs(Math.sin(p*Math.PI*6))*.25],              // 走：一颠一颠
+ drift:p=>[p,p,Math.sin(p*9)*1.4*(1-p),0],                          // 飘：雪花、羽毛
+ fly:p=>[EASE.inout(p),EASE.inout(p),Math.sin(p*14)*1.2*(1-p),Math.cos(p*11)*.8*(1-p)], // 飞：小虫
+ settle:p=>[Math.pow(p,2.5),p,Math.sin(p*9)*(1-p),0],                  // 飘下来最后才贴过去：绕开挡路的东西
+ fall:p=>[p,EASE.in(p),0,0],                                        // 掉：越掉越快
+ hop:(p,h)=>[p,p,0,-4*(h||1)*p*(1-p)],                              // 小跳
+ arc:(p,h)=>[p,p,0,-4*(h||4)*p*(1-p)],                              // 抛物线：扔球
+};
+const STORIES=[];
+function story(def){STORIES.push(def)}
+
+function actor(S,name,def){
+ const e=document.createElement('div');e.className='g';S.box.appendChild(e);
+ if(def.z)e.style.zIndex=def.z;if(def.color)e.style.color=def.color;if(def.mask)e.style.background='var(--bg)';
+ const a={name,def,poses:def.poses,anchors:def.anchors||{},pin:def.pin||[0,0],x:0,y:0,ox:0,oy:0,pose:null,vis:true,moving:0,e,
+  set(p){if(!(p in a.poses))throw Error(`「${name}」没有 pose「${p}」`);if(a.pose!==p){a.pose=p;e.innerHTML=md(a.poses[p],def.acc)}return a},
+  draw(){e.style.left=(a.x+a.ox)*S.cw+'px';e.style.top=(a.y+a.oy)*S.lh+'px';e.style.visibility=a.vis?'visible':'hidden'}};
+ return a}
+
+// 目标：[列,行] / {dx,dy}（相对自己）/ '角色.锚点' / ['角色.锚点',dx,dy]
+function pt(S,a,t){let x,y;
+ if(typeof t==='string'||typeof t[0]==='string'){const [ref,dx=0,dy=0]=typeof t==='string'?[t]:t;const [n,k]=ref.split('.');const b=S.A[n];
+  if(!b)throw Error(`没有角色「${n}」`);const an=k?b.anchors[k]:[0,0];if(!an)throw Error(`「${n}」没有锚点「${k}」`);x=b.x+an[0]+dx;y=b.y+an[1]+dy}
+ else if(!Array.isArray(t)){x=a.x+a.pin[0]+(t.dx||0);y=a.y+a.pin[1]+(t.dy||0)}
+ else [x,y]=t;
+ return [x-a.pin[0],y-a.pin[1]]}
+
+// 反应词表。抖动只是其中一种，一个故事最多用一次。
+const REACT={
+ freeze:async(S,a)=>{a.set('blank');await sleep(1400)},                         // 愣住
+ turn:async(S,a)=>{await sleep(350);a.set('camera');await sleep(1300)},          // 慢慢转头看你
+ pretend:async(S,a)=>{a.set('away');await sleep(1200);a.set('idle');await sleep(500)}, // 假装没事
+ proud:async(S,a)=>{a.set('proud');await run(S,['move',a.name,{dy:-.7},170,'slide']);await run(S,['move',a.name,{dy:.7},170,'fall']);await sleep(1100)}, // 得意
+ shake:async(S,a)=>{S.shakes++;await tween(320,p=>{a.ox=p<1?Math.sin(p*40)*.25:0});a.ox=0}, // 抖（限一次）
+};
+const NEEDS={freeze:['blank'],turn:['camera'],pretend:['away','idle'],proud:['proud']};
+
+async function run(S,b){
+ if(typeof b==='function')return b(S);
+ const [op,...r]=b;const A=n=>{const a=S.A[n];if(!a)throw Error(`没有角色「${n}」`);return a};
+ switch(op){
+  case 'wait':return sleep(r[0]);
+  case 'pose':{const a=A(r[0]);a.set(r[1]);a.vis=true;return}
+  case 'hide':A(r[0]).vis=false;return;
+  case 'place':{const a=A(r[0]);[a.x,a.y]=pt(S,a,r[1]);if(r[2])a.set(r[2]);a.vis=true;return}
+  case 'move':{const [n,to,ms,style='slide',h]=r;const a=A(n);const x0=a.x,y0=a.y;const [x1,y1]=pt(S,a,to);a.vis=true;a.moving++;
+   await tween(ms,p=>{const q=PATH[style](p,h);a.x=x0+(x1-x0)*q[0]+q[2];a.y=y0+(y1-y0)*q[1]+q[3]});a.x=x1;a.y=y1;a.moving--;
+   if(typeof to==='string'||typeof to[0]==='string')S.mark(`${n} → ${typeof to==='string'?to:to[0]}`);return}
+  case 'nudge':return run(S,['move',r[0],{dx:r[1],dy:r[2]||0},r[3]||260,'slide']);
+  case 'frames':{const [n,ps,every=150,total]=r;const a=A(n);a.vis=true;const ms=total||ps.length*every;
+   await tween(ms,p=>{const i=Math.floor(p*ms/every);a.set(ps[total?i%ps.length:Math.min(i,ps.length-1)])});return}
+  case 'blink':{const a=A(r[0]);const p=a.pose;a.set(r[1]||'blink');await sleep(140);a.set(p);return}
+  case 'react':return REACT[r[1]](S,A(r[0]));
+  case 'par':return Promise.all(r.map(x=>run(S,x)));
+  case 'seq':for(const x of r)await run(S,x);return;
+  case 'maybe':{const yes=Math.random()<r[0];S.mark(yes?'走了「意外」分支':'走了「平常」分支');for(const x of (yes?r[1]:(r[2]||[])))await run(S,x);return}
+  case 'mark':S.mark(r[0]);return;
+  default:throw Error('不认识的动作 '+op)}}
+
+function lint(S){const d=S.def;
+ const walk=b=>{if(!Array.isArray(b))return;if(b[0]==='react'){const a=d.cast[b[1]];(NEEDS[b[2]]||[]).forEach(p=>{if(!a||!(p in a.poses))S.warn(`反应「${b[2]}」需要「${b[1]}」有 pose「${p}」`)})}b.forEach(walk)};
+ walk(d.beats);const n=JSON.stringify(d.beats).split('"shake"').length-1;if(n>1)S.warn(`剧本里写了 ${n} 次抖动，最多 1 次`)}
+
+function mount(st,def){
+ const {cols,rows}=SIZES[def.size||'card'];
+ const probe=document.createElement('div');probe.className='g';probe.style.fontSize='100px';probe.style.visibility='hidden';probe.textContent='MMMMMMMMMM\nM';st.appendChild(probe);
+ const r=probe.getBoundingClientRect();probe.remove();const rw=r.width/1000,rl=r.height/200;
+ const fs=Math.min((st.clientWidth-48)/(cols*rw),(st.clientHeight-48)/(rows*rl),44);
+ const box=document.createElement('div');box.className='box';box.style.cssText=`position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);overflow:hidden;font-size:${fs}px;width:${cols*rw*fs}px;height:${rows*rl*fs}px`;st.appendChild(box);
+ const S={def,st,box,cols,rows,cw:rw*fs,lh:rl*fs,A:{},amb:[],shakes:0,warns:new Set(),
+  warn(m){if(!S.warns.has(m)){S.warns.add(m);console.warn(def.title+'：'+m)}},
+  mark(l){(window.__marks=window.__marks||[]).push({story:def.title,label:l,t:NOW})}};
+ for(const [n,d] of Object.entries(def.cast))S.A[n]=actor(S,n,d);
+ if(def.ambient==='snow')for(let i=0;i<8;i++){const e=document.createElement('div');e.className='g';e.style.opacity=.4;e.textContent=i%3?'*':'.';box.appendChild(e);S.amb.push({e,x:Math.random()*cols,y:Math.random()*rows,v:.0015+Math.random()*.0015,p:Math.random()*6})}
+ lint(S);
+ S.reset=()=>{for(const a of Object.values(S.A)){const d=a.def;a.ox=a.oy=0;a.set(d.pose||Object.keys(d.poses)[0]);[a.x,a.y]=d.at||[0,0];a.vis=!d.hidden}};
+ if(def.click)st.onclick=()=>run(S,['seq',...def.click]).catch(e=>console.error(e));
+ (async()=>{while(!S.dead){S.reset();S.shakes=0;await run(S,['seq',...def.beats]);if(S.shakes>1)S.warn(`抖动用了 ${S.shakes} 次`);await sleep(def.gap||1400)}})().catch(e=>{console.error(def.title,e)});
+ return S}
+
+// 每一帧：推进时间、画、顺手检查
+function check(S){const occ=new Map();let accN=0;const touch=(S.def.touch||[]).map(p=>p.slice().sort().join('×'));
+ for(const a of Object.values(S.A)){if(!a.vis)continue;const raw=a.poses[a.pose];accN+=(raw.match(/⟦\w\|(.*?)⟧/g)||[]).reduce((s,m)=>s+plain(m).trim().length,0);
+  plain(raw).split('\n').forEach((line,j)=>{[...line].forEach((ch,i)=>{if(ch===' ')return;const c=Math.round(a.x+a.ox)+i,rr=Math.round(a.y+a.oy)+j;
+   if(!a.moving&&(c<0||c>=S.cols||rr<0||rr>=S.rows))S.warn(`出界：「${a.name}」停在画面外`);
+   const k=c+','+rr;const o=occ.get(k);if(o&&o!==a.name){const pair=[o,a.name].sort().join('×');if(!touch.includes(pair))S.warn(`重叠：「${o}」和「${a.name}」叠在一起（${a.name} 的 ${a.pose}，第 ${c} 列第 ${rr} 行）`)}else occ.set(k,a.name)})})}
+ if(accN>6)S.warn(`点睛色一次用了 ${accN} 个字，太多（建议 ≤ 6）`)}
+let LAST=performance.now(),FR=0;const ALL=[];
+function loop(){const t=performance.now();const dt=Math.min(t-LAST,60)*SPEED;LAST=t;NOW+=dt;FR++;
+ for(const w of TW.slice()){const p=Math.min(1,(NOW-w.t0)/w.ms);w.fn(p);if(p>=1){TW.splice(TW.indexOf(w),1);w.res()}}
+ for(const S of ALL){if(S.dead)continue;for(const f of S.amb){f.p+=.002*dt;f.y+=f.v*dt;if(f.y>S.rows){f.y=-1;f.x=Math.random()*S.cols}f.e.style.left=(f.x+Math.sin(f.p)*.6)*S.cw+'px';f.e.style.top=f.y*S.lh+'px'}
+  for(const a of Object.values(S.A))a.draw();if(FR%3==0)check(S)}
+ window.__report=ALL.map(S=>({story:S.def.title,warnings:[...S.warns]}));requestAnimationFrame(loop)}
+
+// 2. 猫推杯子：想让杯子掉下去 → 一爪一爪推，推一下看你一眼 → 有时杯子卡在桌边晃 → 若无其事
+const CAT=(eyes,lean,paw='')=>(lean?[" /\\_/\\","(  "+eyes+")"," > ^ <"+paw]:[" /\\_/\\","( "+eyes+" )"," > ^ <"]).join('\n');
+story({title:'猫推杯子',acc:'#e0703a',
+ hint:'猫想让杯子掉下去。一爪一爪推，推一下停下来看你一眼。最后一推，若无其事地舔舔爪。',
+ touch:[['cat','cup']],
+ cast:{table:{at:[6,9],poses:{t:'_'.repeat(24)+'\n|'+' '.repeat(22)+'|'}},
+  cat:{at:[10,6],poses:{idle:CAT('o.o'),look:CAT('o.o',1),paw:CAT('o.o',1,'='),swipe:CAT('>.<',1,'=='),camera:CAT('o.o'),blank:CAT('._.',1),away:CAT('-.-'),proud:CAT('^.^'),blink:CAT('-.-')}},
+  cup:{at:[18,8],poses:{c:'⟦a|c[_]⟧',r1:'⟦a|[_]ɔ⟧',r2:'⟦a|]_[⟧',r3:'⟦a|ɔ[_]⟧'}},
+  crash:{hidden:true,poses:{x:". ⟦a|'⟧ ,\n',⟦a|:⟧'"}}},
+ beats:[
+  ['wait',900],['pose','cat','look'],['wait',900],
+  // 推一下，看你一眼（慢 → 停）
+  ['pose','cat','paw'],['par',['nudge','cup',1],['nudge','cat',1]],['pose','cat','look'],['wait',500],['pose','cat','camera'],['wait',1300],
+  ['pose','cat','look'],['wait',400],['pose','cat','paw'],['par',['nudge','cup',1],['nudge','cat',1]],['pose','cat','look'],['wait',700],
+  ['pose','cat','paw'],['par',['nudge','cup',1],['nudge','cat',1]],['pose','cat','camera'],['wait',1600],
+  ['pose','cat','look'],['wait',1200],                                                   // 停很久：要不要推
+  ['pose','cat','swipe'],['move','cup',[29,8],420,'slide'],['pose','cat','look'],        // 快
+  ['maybe',.3,[['move','cup',{dy:0},260,'hop',.25],['move','cup',{dy:0},260,'hop',.2],['move','cup',{dy:0},300,'hop',.12],
+               ['react','cat','freeze'],['react','cat','turn'],['pose','cat','look'],['wait',500],['pose','cat','paw'],['wait',200],['pose','cat','look']]],
+  ['par',['move','cup',[31,12],650,'fall'],['frames','cup',['r1','r2','r3','c'],160]],['hide','cup'],['place','crash',[30,12]],
+  ['wait',700],['pose','cat','camera'],['wait',1000],['react','cat','pretend'],['wait',600],['hide','crash'],
+ ]});
+
+// 猫织毛衣（忍不忍得住）：一边织一边被毛线球勾引，终于一爪拍过去，球滚走，围巾一行行被拆光
+const KCAT=(eyes,paws=' >\\/<')=>[" /\\_/\\","( "+eyes+" )",paws].join('\n');
+const SCARF=n=>Array(n).fill('  vvv').join('\n')||' ';
+story({title:'猫织毛衣',acc:'#e5383b',
+ hint:'猫想织完一条围巾，可毛线球一直在动。忍了两次，第三次一爪拍过去，球滚走了，围巾被一行行拆光。',
+ touch:[['cat','yarn'],['cat','scarf'],['yarn','ball']],
+ cast:{cat:{at:[7,3],poses:{k1:KCAT('-.-'),k2:KCAT('-.-',' >/\\<'),look:KCAT('°.°'),hold:KCAT('>.<'),swipe:KCAT('o.o',' >\\/<=='),blank:KCAT('._.'),camera:KCAT('o.o'),away:KCAT('-.-',' >\\/<'),idle:KCAT('-.-'),blink:KCAT('-.-')}},
+  scarf:{at:[7,6],poses:{n0:' ',n1:SCARF(1),n2:SCARF(2),n3:SCARF(3),n4:SCARF(4),n5:SCARF(5),n6:SCARF(6)}},
+  yarn:{at:[14,5],poses:{a:'. . . . . . . .',b:'. . . . . . . . . .',c:'. . . . . . . . . .',d:'. . . . . . . . . . .'}},
+  ball:{at:[30,5],poses:{o:'⟦a|@⟧'}}},
+ beats:[
+  // 慢：一行一行织
+  ['par',['frames','cat',['k1','k2'],300,3000],['frames','scarf',['n1','n2','n3','n4'],750]],
+  // 球自己滚了一下 → 停下来盯着 → 忍住，接着织
+  ['nudge','ball',1,0,300],['pose','cat','look'],['wait',900],['pose','cat','k1'],['wait',300],
+  ['par',['frames','cat',['k1','k2'],300,1500],['seq',['wait',700],['pose','scarf','n5']]],
+  // 又滚了一下 → 盯着 → 憋住
+  ['nudge','ball',-1,0,250],['nudge','ball',1,0,250],['pose','cat','look'],['wait',700],['pose','cat','hold'],['wait',1100],
+  // 快：没忍住，一爪拍过去，球滚出画面，毛线拉着围巾一行行拆掉
+  ['pose','cat','swipe'],['wait',120],
+  ['par',['seq',['pose','yarn','b'],['move','ball',[37,5],600,'fall'],['hide','ball'],['pose','yarn','d']],
+         ['seq',['wait',250],['frames','scarf',['n4','n3','n2','n1','n0'],170]]],
+  ['hide','ball'],['pose','cat','blank'],['wait',1200],
+  // 反应：看你 → 假装没事，接着织空气
+  ['react','cat','turn'],['par',['frames','cat',['k1','k2'],300,1800]],['wait',400],
+  ['pose','yarn','a'],['place','ball',[30,5]],['pose','scarf','n0'],
+ ]});
+// 巫师变星星（够不够得到）：想变一颗星星 → 聚光、憋住 → 砰，变出来一只小虫绕着头飞 → 斜眼瞪着它
+const WB=["     __/\\__",". _  \\\\EE//","-(O)-/_||_\\"," .'. \\_()_/","  |   | . \\","  |   | .  \\"," .'. ,\\_____'."];
+const WIZ=(eyes,orb)=>{const r=WB.slice();r[1]=r[1].replace('EE',eyes);r[2]=r[2].replace('(O)',orb);return r.join('\n')};
+const SP={poses:{a:'.',b:'+'},hidden:true};
+story({title:'巫师变星星',acc:'#f2b705',
+ hint:'巫师想变出一颗星星。他举杖聚光、憋住，砰的一声，变出来的却是一只小虫，绕着他的头飞。',
+ touch:[['wiz','s1'],['wiz','s2'],['wiz','s3'],['wiz','s4'],['wiz','bug'],['wiz','b1'],['wiz','b2'],['wiz','b3'],['wiz','b4'],['wiz','b5'],['wiz','b6']],
+ cast:{wiz:{at:[13,6],anchors:{orb:[2,2],head:[7,1]},poses:{idle:WIZ("''",'( )'),up:WIZ("°°",'( )'),glow:WIZ("''",'(o)'),hold:WIZ('--','(O)'),zap:WIZ('OO','( )'),glareL:WIZ('¬¬','( )'),blank:WIZ('..','( )'),camera:WIZ('••','( )'),away:WIZ("''",'( )'),blink:WIZ('--','( )')}},
+  think:{hidden:true,poses:{a:'   ⟦a|*⟧\n  o\n .'}},
+  s1:SP,s2:SP,s3:SP,s4:SP,
+  b1:{hidden:true,poses:{a:'*'}},b2:{hidden:true,poses:{a:'.'}},b3:{hidden:true,poses:{a:'*'}},b4:{hidden:true,poses:{a:'.'}},b5:{hidden:true,poses:{a:'*'}},b6:{hidden:true,poses:{a:'.'}},
+  bug:{hidden:true,pin:[1,0],poses:{a:'c•ɔ',b:'-•-'}}},
+ beats:[
+  ['wait',600],['blink','wiz'],['wait',500],
+  // 想要：抬头想着一颗星星
+  ['pose','wiz','up'],['place','think',['wiz.head',2,-4]],['wait',1500],['hide','think'],['pose','wiz','idle'],['wait',300],
+  // 慢：光点从四周聚到法杖上
+  ['place','s1',['wiz.orb',-6,-3]],['place','s2',['wiz.orb',6,-4]],['place','s3',['wiz.orb',-5,3]],['place','s4',['wiz.orb',5,2]],
+  ['par',['move','s1','wiz.orb',1300,'slide'],['move','s2','wiz.orb',1500,'slide'],['move','s3','wiz.orb',1200,'slide'],['move','s4','wiz.orb',1400,'slide'],
+         ['seq',['pose','wiz','glow'],['wait',700],['pose','wiz','hold']]],
+  ['hide','s1'],['hide','s2'],['hide','s3'],['hide','s4'],
+  // 停：憋住
+  ['wait',900],
+  // 快：砰
+  ['pose','wiz','zap'],
+  ['place','b1',['wiz.orb',-1,-1]],['place','b2',['wiz.orb',0,-1]],['place','b3',['wiz.orb',1,-1]],['place','b4',['wiz.orb',-1,0]],['place','b5',['wiz.orb',-1,-2]],['place','b6',['wiz.orb',1,-2]],
+  ['par',['move','b1',['wiz.orb',-6,-4],350,'slide'],['move','b2',['wiz.orb',1,-6],350,'slide'],['move','b3',['wiz.orb',7,-4],350,'slide'],
+         ['move','b4',['wiz.orb',-7,1],350,'slide'],['move','b5',['wiz.orb',-3,-6],350,'slide'],['move','b6',['wiz.orb',5,-6],350,'slide']],
+  ['wait',150],['hide','b1'],['hide','b2'],['hide','b3'],['hide','b4'],['hide','b5'],['hide','b6'],
+  // 意外：一只小虫，绕着他的头飞
+  ['place','bug',['wiz.orb',0,-1],'a'],
+  ['par',['seq',['move','bug',['wiz.head',-5,-3],700,'fly'],['move','bug',['wiz.head',2,-4],700,'fly'],['move','bug',['wiz.head',8,-2],700,'fly'],['move','bug',['wiz.head',2,-4],700,'fly'],['move','bug',['wiz.head',-5,-3],700,'fly']],
+         ['frames','bug',['a','b'],120,3500],
+         ['seq',['wait',300],['pose','wiz','glareL']]],
+  // 反应：瞪着它 → 看你 → 假装没事
+  ['wait',500],['react','wiz','turn'],['move','bug',[40,0],900,'fly'],['hide','bug'],['react','wiz','pretend'],
+ ]});
+// 圣诞老人钻烟囱（观众先知道）：烟囱一直在冒烟，他没看见 → 探头左右看、钻下去 → 一下被烫得弹出来 → 愣住、看你
+const SAN=e=>["  ⟦a|.-\"\"-.⟧"," /,..___\\","() {_____}","  (/"+e+"\\)","  {`-=^=-'}","  {  `-'  }","   {     }","    `---'"].join('\n');
+const CHIM=["|‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾|","|__|____|____|____|","|____|____|____|__|","|__|____|____|____|","|____|____|____|__|"].join('\n');
+story({title:'圣诞老人钻烟囱',acc:'#e5383b',
+ hint:'烟囱一直在冒烟，圣诞老人没看见。他探头左右看看，钻了下去，下一秒被烫得从烟囱里弹了出来。',
+ touch:[['santa','chim'],['smoke','santa'],['puff','santa'],['puff','chim']],
+ cast:{santa:{at:[9,9],hidden:true,poses:{idle:SAN('-@-@-'),left:SAN('@-@--'),right:SAN('--@-@'),up:SAN('-°-°-'),hot:SAN('-O-O-'),blank:SAN('-.-.-'),camera:SAN('-•-•-'),away:SAN('@-@--'),blink:SAN('-----')}},
+  chim:{at:[7,9],z:2,mask:true,poses:{c:CHIM}},
+  smoke:{at:[21,4],poses:{a:"  (\n   )\n  (",b:"   )\n  (\n   )"}},
+  puff:{hidden:true,poses:{a:"( ) ( )\n ( ) (",b:" ( ) (\n( ) ( )"}}},
+ beats:[
+  // 观众先知道：烟囱在冒烟
+  ['frames','smoke',['a','b'],400,1600],
+  // 慢：圣诞老人从烟囱后面探出头，左右看
+  ['par',['frames','smoke',['a','b'],400,4400],
+   ['seq',['place','santa',[9,9]],['move','santa',[9,4],800,'slide'],['wait',300],['pose','santa','left'],['wait',700],['pose','santa','right'],['wait',700],['pose','santa','idle'],['wait',400],['blink','santa'],['wait',300],
+    // 快：嗖地钻下去
+    ['move','santa',[9,9],260,'fall'],['hide','santa']]],
+  ['hide','smoke'],
+  // 停
+  ['wait',900],
+  // 意外：被烫得弹出来，飞到半空
+  ['place','santa',[9,9],'hot'],['place','puff',[9,8],'a'],
+  ['par',['move','santa',[9,0],380,'slide'],['frames','puff',['a','b'],150,700]],['hide','puff'],
+  ['move','santa',[9,4],420,'fall'],
+  // 反应：愣住 → 看你 → 假装没事
+  ['place','smoke',[21,4],'a'],['par',['frames','smoke',['a','b'],400,2800],['seq',['react','santa','freeze'],['react','santa','turn']]],
+  ['hide','smoke'],['pose','santa','away'],['wait',800],['move','santa',[9,9],500,'slide'],['hide','santa'],['place','smoke',[21,4],'a'],['wait',500],
+ ]});
+
+// ===== page =====
+const INFO={
+ '猫推杯子':{story:"A cat wants the cup on the floor. It pushes the cup one paw at a time and looks back at you after each push. It hesitates at the edge, then one last swipe: the cup falls and smashes, and the cat acts like nothing happened.\nTension: almost there.",prompt:"Use the glyph-theater skill to make a tiny ASCII story:\na cat wants the cup on the floor. It pushes the cup one paw\nat a time and looks back at you after each push. Last push,\nthe cup falls and the cat acts like nothing happened.\nTension: almost there.",name:'Cup',beats:[['Wants','the cup on the floor'],['Does','one paw at a time'],['Twist','looks back at you after each push'],['Reacts','acts like nothing happened']],
+   tension:[['Type','<u>almost there</u>'],['Moment','the long pause at the edge'],['Pace','push · stop · push · <u>swipe</u>']],
+   script:[['1','nudge cup +1, look at camera'],['2','wait 1200'],['3','swipe, cup slides off'],['4','fall + spin, crash'],['5','react pretend']]},
+ '猫织毛衣':{story:"A cat is knitting a scarf, but the yarn ball keeps moving. It holds back twice and keeps knitting; the third time it swipes. The ball rolls away and the scarf unravels row by row. The cat freezes and looks at you.\nTension: can it hold back.",prompt:"Use the glyph-theater skill to make a tiny ASCII story:\na cat is knitting a scarf, but the yarn ball keeps moving.\nIt holds back twice, then swipes. The ball rolls away and\nthe scarf unravels row by row. The cat looks at you.\nTension: can it hold back.",name:'Knit',beats:[['Wants','to finish the scarf'],['Does','knits row by row'],['Twist','the yarn ball keeps moving'],['Reacts','stares at you, knits air']],
+   tension:[['Type','<u>can it hold back</u>'],['Moment','the second wiggle, eyes squeezed'],['Pace','knit · stop · knit · <u>swipe</u>']],
+   script:[['1','frames knit, scarf +1 row'],['2','ball nudges, cat looks'],['3','hold 1100'],['4','swipe, ball rolls off'],['5','scarf unravels, react turn']]},
+ '巫师变星星':{story:"A wizard wants to make a star (show it in a small thought bubble first). Sparks gather on his staff, he holds it, and pop: out comes a bug that circles his head. He glares at it, then looks at you.\nTension: almost there.",prompt:"Use the glyph-theater skill to make a tiny ASCII story:\na wizard wants to make a star. He gathers light on his staff,\nholds it, and pop: out comes a bug that circles his head.\nHe glares at it, then looks at you.\nTension: almost there.",name:'Wizard',beats:[['Wants','a star'],['Does','gathers light on the staff'],['Twist','out comes a bug'],['Reacts','glares, then looks at you']],
+   tension:[['Type','<u>almost there</u>'],['Moment','the held glow before the pop'],['Pace','gather · hold · <u>pop</u> · stop']],
+   script:[['1','think bubble with a star'],['2','4 sparks move to staff'],['3','hold 900'],['4','burst, bug flies around head'],['5','react turn, pretend']]},
+ '圣诞老人钻烟囱':{story:"Santa wants to slip down a chimney, but smoke is already rising from it. He peeks left and right and dives in anyway. A beat later he launches back out, falls back down, freezes and looks at you.\nTension: you know first.",prompt:"Use the glyph-theater skill to make a tiny ASCII story:\nSanta wants to slip down a chimney, but smoke is already\nrising from it. He peeks left and right and dives in anyway.\nA second later he launches back out, then freezes.\nTension: you know first.",name:'Chimney',beats:[['Wants','to slip down the chimney'],['Does','peeks left, right, dives'],['Twist','the fire is on'],['Reacts','freezes, looks at you']],
+   tension:[['Type','<u>you know first</u>'],['Moment','smoke is rising and he dives anyway'],['Pace','peek · stop · dive · <u>launch</u>']],
+   script:[['1','smoke loops on the chimney'],['2','rise, look left, look right'],['3','dive, wait 900'],['4','launch up, fall back'],['5','react freeze, turn']]}};
+const $=s=>document.querySelector(s);let cur=0,tab='prompt',S=null;
+const picker=$('#picker');
+STORIES.forEach((d,i)=>{const b=document.createElement('button');b.textContent=INFO[d.title].name;b.onclick=()=>{cur=i;play()};picker.appendChild(b)});
+function play(){if(S){S.dead=true}const st=$('#stage');st.innerHTML='';const d=STORIES[cur];$('#demo').style.setProperty('--acc',d.acc);
+ Math.random=d.title=='猫推杯子'?(()=>{let s=100000;return()=>{s=(s*16807)%2147483647;return (s-1)/2147483646}})():Math.random;
+ S=mount(st,d);ALL.push(S);[...picker.children].forEach((b,i)=>b.classList.toggle('on',i==cur));spec()}
+const RND=Math.random;
+const PT="Make a tiny ASCII story: a small web page that plays by itself and loops.\n\nStory\n{S}\n\nRules\n1. Four beats: the character wants something, goes for it in its own nature, something goes a little wrong, and it reacts. Write the four beats in one sentence before building.\n2. Tension: the viewer must know what they are waiting for. Name where it comes from (almost there / you know first / can it hold back). If there is none, change the story.\n3. Rhythm: slow \u2192 stop \u2192 fast \u2192 stop. Exaggerate one thing. About 30% of loops take a different turn.\n4. Reactions are attitude, not effects: freeze, slowly look at the viewer, pretend nothing happened, proud. Shake at most once.\n5. Characters: start from classic ASCII pieces (for example asciiart.eu). Keep the shape, change only eyes, mouth and hands. Don't draw from scratch, and never show artist initials.\n6. Look: monospace, black and white, with one accent color on one or two glyphs of the thing it wants. Light and dark modes. No captions on screen.\n7. Lay everything out in grid cells and measure the glyph size in the browser; never hard-code pixels. Nothing overlaps unless it touches on purpose.\n\nBefore building, ask me these one at a time, with your recommendation marked:\n1. Where it will live: a standalone page (recommended), an embeddable snippet, or a GIF.\n2. The accent color (recommend one that fits the story).\nThen build it, play it through in a browser, check that every beat reads without a title, and send it to me.";
+$("#iText").textContent="Install the Glyph Theater skill for me.\n1. Download https://shuyii0315-arch.github.io/glyph-theater/SKILL.md\n2. Save it as glyph-theater/SKILL.md in this tool's skills folder:\n   Claude Code: ~/.claude/skills/\n   Codex: ~/.codex/skills/\n   Cursor: ~/.cursor/skills/\n   Other agents: .agents/skills/ in this project\n3. Tell me where you saved it.\nIf I ask you to update it later, download the same file again and replace it.";
+function spec(){const d=STORIES[cur],I=INFO[d.title];$('#pText').textContent=PT.replace('{S}',I.story);$('#pHint').textContent='Story: '+I.name+' · paste it into Claude, ChatGPT, Cursor or Codex'}
+document.querySelectorAll('.tg').forEach(b=>b.onclick=()=>{const r=b.closest('.row');r.classList.toggle('open');b.setAttribute('aria-expanded',r.classList.contains('open'))});
+document.querySelectorAll('button.cp').forEach(b=>b.onclick=async()=>{const s=$('#'+b.dataset.t).textContent,o=b.textContent;try{await navigator.clipboard.writeText(s);b.textContent='Copied'}catch(e){prompt('Copy',s.slice(0,2000))}setTimeout(()=>b.textContent=o,1500)});
+$('#replay').onclick=play;
+$('#expand').onclick=()=>{document.body.classList.toggle('m-full');requestAnimationFrame(play)};
+addEventListener('keydown',e=>{if(e.key=='Escape'&&document.body.classList.contains('m-full')){document.body.classList.remove('m-full');requestAnimationFrame(play)}});
+let rt;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(play,200)});
+$('#share').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);$('#share span').textContent='Copied'}catch(e){prompt('Copy link',location.href)}setTimeout(()=>$('#share span').textContent='Share',1500)};
+requestAnimationFrame(()=>{play();loop()});
+</script></body></html>
